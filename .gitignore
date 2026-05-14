@@ -11,6 +11,15 @@ CTestTestfile.cmake
 _deps
 CMakeUserPresets.json
 
+# Ignore the entire local build environment
+build/
+
+# IDE files that might slip into the root folder
+.DS_Store
+.vs/
+.idea/
+*.user
+
 # CLion
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
