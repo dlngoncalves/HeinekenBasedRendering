@@ -1,9 +1,21 @@
 cmake_minimum_required(VERSION 3.15)
-project(PBREngine LANGUAGES CXX)
+project(HBREngine LANGUAGES CXX)
 
 # Force C++17 for modern features and clean library alignment
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Export compile commands for IDEs and tools that use them (like clang-tidy)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# Output directories
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
+# Custom CMake modules
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # 1. Define our source files
 set(SOURCE_FILES
@@ -47,6 +59,9 @@ if(APPLE)
 elseif(WIN32)
     # Windows Specifics
     # On Windows, we need GLEW to map the modern OpenGL function pointers
+    # Windows: use static runtime to avoid DLL hell
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
     find_package(GLEW REQUIRED)
     target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW)
     
