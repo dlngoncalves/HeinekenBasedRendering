@@ -12,11 +12,12 @@ _deps
 CMakeUserPresets.json
 
 # Ignore the entire local build environment
-build/
+[Bb]uild*/
 
 # IDE files that might slip into the root folder
 .DS_Store
 .vs/
+.vscode/
 .idea/
 *.user
 
