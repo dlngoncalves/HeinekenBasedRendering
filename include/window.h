@@ -16,6 +16,7 @@ class Window
 {
     GLFWwindow* handle;  // GLFW is an impl detail, hidden here
 public:
+    ~Window();
     void init(WindowConfig config);
     void pollEvents();
     void swapBuffers();          // only called by OpenGL backend

@@ -23,12 +23,7 @@ void Window::init(WindowConfig config)
         throw std::runtime_error("Failed to create GLFW window");
     }
 
-    // glfwMakeContextCurrent(handle);
-    // glfwSwapInterval(config.vsync ? 1 : 0); // Enable/disable VSync
-
-    // glfwSetWindowSizeCallback (g_window, glfw_window_size_callback);
-	// glfwMakeContextCurrent (g_window);
-	glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	glfwWindowHint (GLFW_SAMPLES, 0);
 }
 
@@ -56,6 +51,11 @@ void Window::shutdown()
 {
     glfwDestroyWindow(handle);
     glfwTerminate();
+}
+
+Window::~Window()
+{
+    shutdown();
 }
 
 void Window::errorCallback(int error, const char* description) 

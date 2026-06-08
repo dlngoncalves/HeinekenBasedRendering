@@ -2,8 +2,9 @@
 #include "application.h"
 #include "window.h"
 #include "OpenGLDevice.h"
-#include "OpenGLRenderTarget.h"
 #include "renderer.h"
+#include "RHIRenderTarget.h"
+#include "OpenGLRenderTarget.h"
 
 #ifdef ENGINE_RENDERER_OPENGL
     #include "imgui_impl_opengl3.h"
@@ -50,6 +51,10 @@ void Application::init(WindowConfig config)
         return;
     }
 
+    IMGUI_CHECKVERSION();
+    UIContext = ImGui::CreateContext();
+    ImGui::SetCurrentContext(UIContext);
+    
     auto glDevice = std::make_unique<OpenGLDevice>();
     
     try
@@ -61,11 +66,8 @@ void Application::init(WindowConfig config)
         std::cerr << e.what() << std::endl;
         return;
     }
-
-    IMGUI_CHECKVERSION();
-    UIContext = ImGui::CreateContext();
     
-    *io = ImGui::GetIO(); (void)io;
+    auto& io = ImGui::GetIO(); (void)io;
     ImGui::StyleColorsDark();
     
     RenderTargetDesc desc = {RenderTargetType::Screen,1280,720,std::vector<TextureFormat>{},true,TextureFormat::DEPTH24_STENCIL8};
@@ -73,6 +75,7 @@ void Application::init(WindowConfig config)
 
     device = std::move(glDevice);
 
+    // Pass ownership of the render target to the renderer
     renderer.init(device.get(), std::move(renderTarget));
 
     run();
@@ -102,16 +105,16 @@ void Application::run()
         deltaTime = currentTime - lastFrameTime;
         lastFrameTime = currentTime;
 
-        tick(deltaTime);
-
+        //tick(deltaTime);
+        auto& io = ImGui::GetIO(); (void)io;
         ImGui::NewFrame();
 
             ImGui::Begin("Engine Diagnostics");
             ImGui::Text("Application Performance: %.3f ms/frame (%.1f FPS)",
-                        1000.0f / io->Framerate, io->Framerate);
+                        1000.0f / io.Framerate, io.Framerate);
         
-        ImGui::End();
-
+        ImGui::End();        
+        ImGui::Render();
         ImDrawData* drawData = ImGui::GetDrawData();
         renderer.beginFrame();
         renderer.getDevice()->renderImGuiDrawData(drawData);
@@ -132,7 +135,7 @@ Application::Application()
 
 Application::~Application()
 {
-    shutdown();
+    
 }
 
 void Application::shutdown() 

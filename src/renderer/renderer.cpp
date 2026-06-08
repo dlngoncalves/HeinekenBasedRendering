@@ -2,9 +2,15 @@
 #include "RHIRenderTarget.h"
 #include <utility>
 #include <memory>
+
 void Renderer::init(RHIDevice* ConcreteDevice, std::unique_ptr<RHIRenderTarget> mainRT) 
 {
     device = ConcreteDevice;
+    
+    if(!mainRT)
+        return;
+    
+    mainRenderTarget = std::move(mainRT);
     mainRenderTarget->bind();
     //device->createCommandBuffer();
     //commandBuffer = device->createCommandBuffer().get();
