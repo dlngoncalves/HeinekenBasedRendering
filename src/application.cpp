@@ -2,7 +2,7 @@
 #include "application.h"
 #include "window.h"
 #include "OpenGLDevice.h"
-#include "OpenGlRenderTarget.h"
+#include "OpenGLRenderTarget.h"
 #include "renderer.h"
 
 #ifdef ENGINE_RENDERER_OPENGL
@@ -38,7 +38,6 @@
 //     glfwSwapBuffers(window);
 // }
 
-
 void Application::init(WindowConfig config) 
 {
     try
@@ -63,16 +62,16 @@ void Application::init(WindowConfig config)
         return;
     }
 
+    RenderTargetDesc desc = {RenderTargetType::Screen,1280,720,std::vector<TextureFormat>{},true,TextureFormat::DEPTH24_STENCIL8};
+    std::unique_ptr<RHIRenderTarget> renderTarget = glDevice->createRenderTarget(desc);
+
     device = std::move(glDevice);
 
-    auto glRenderTarget = std::make_unique<OpenGLRenderTarget>();
-    glRenderTarget->init();
-
-    renderer.init(device.get(), glRenderTarget.get());
+    renderer.init(device.get(), std::move(renderTarget));
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    io = ImGui::GetIO(); (void)io;
+    *io = ImGui::GetIO(); (void)io;
     ImGui::StyleColorsDark();
 
     run();
@@ -106,7 +105,7 @@ void Application::run()
 
             ImGui::Begin("Engine Diagnostics");
             ImGui::Text("Application Performance: %.3f ms/frame (%.1f FPS)",
-                        1000.0f / io.Framerate, io.Framerate);
+                        1000.0f / io->Framerate, io->Framerate);
         
         ImGui::End();
 
@@ -124,7 +123,11 @@ void Application::tick(double deltaTime)
     renderer.endFrame();
 }
 
-Application::~Application() 
+Application::Application()
+{
+}
+
+Application::~Application()
 {
     shutdown();
 }

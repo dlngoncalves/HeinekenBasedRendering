@@ -13,7 +13,7 @@ class Application
         Renderer renderer;
         std::unique_ptr<RHIDevice> device;
         double deltaTime;
-        ImGuiIO& io;
+        ImGuiIO* io;
         void tick(double deltaTime);
     public:
         Application();

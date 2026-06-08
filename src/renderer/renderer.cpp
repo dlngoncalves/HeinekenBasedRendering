@@ -1,9 +1,10 @@
 #include "renderer.h"
-
-void Renderer::init(RHIDevice* ConcreteDevice, RHIRenderTarget* mainRT) 
+#include "RHIRenderTarget.h"
+#include <utility>
+#include <memory>
+void Renderer::init(RHIDevice* ConcreteDevice, std::unique_ptr<RHIRenderTarget> mainRT) 
 {
     device = ConcreteDevice;
-    mainRenderTarget = mainRT;
     mainRenderTarget->bind();
     //device->createCommandBuffer();
     //commandBuffer = device->createCommandBuffer().get();
@@ -18,7 +19,7 @@ RHIDevice* Renderer::getDevice()
 
 RHIRenderTarget* Renderer::getMainRenderTarget() 
 {
-    return mainRenderTarget;
+    return mainRenderTarget.get();
 }
 
 void Renderer::beginFrame() 
@@ -31,4 +32,9 @@ void Renderer::endFrame()
 {
     // commandBuffer->endRenderPass();
     device->endFrame();
+}
+
+void Renderer::setRenderTarget(std::unique_ptr<RHIRenderTarget>renderTarget)
+{
+    mainRenderTarget = std::move(renderTarget);
 }
