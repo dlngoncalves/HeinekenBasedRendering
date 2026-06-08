@@ -16,24 +16,63 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 # Custom CMake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set(RENDER_API "OPENGL" CACHE STRING "Rendering API to use (OPENGL, VULKAN, METAL)")
+set(WINDOWING_API "GLFW" CACHE STRING "Windowing API to use (GLFW, WIN32, COCOA)")
+
+#This might be interesting, but I will have to read more about CMAKE libraries and targets to understand how to use it properly.
+# if(RENDER_API STREQUAL "OPENGL")
+#     file(GLOB_RECURSE HEADER_FILES include/*.h)
+#     file(GLOB_RECURSE SOURCE_FILES src/*.cpp)
+#     add_library(gl_api INTERFACE)
+#     target_include_directories(gl_api INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/backends/opengl)
+#     target_compile_definitions(gl_api INTERFACE ENGINE_RENDERER_OPENGL)
+# endif()
 
 # 1. Define our source files
+if(RENDER_API STREQUAL "OPENGL")
+    file(GLOB_RECURSE OPENGL_SOURCES src/renderer/backends/opengl/*.cpp)
+endif()
+
 set(SOURCE_FILES
     src/main.cpp
+    src/window.cpp
+    src/application.cpp
+    src/renderer/Renderer.cpp
     src/imgui.cpp
     src/imgui_draw.cpp
     src/imgui_tables.cpp
     src/imgui_widgets.cpp
     src/imgui_impl_glfw.cpp
     src/imgui_impl_opengl3.cpp
+    ${OPENGL_SOURCES}
 )
 
 # 2. Create the executable
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
+# Pass the chosen API as a global compile definition
+if(RENDER_API STREQUAL "OPENGL")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE ENGINE_RENDERER_OPENGL)
+    
+    target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/renderer/backends/opengl)
+    
+    if(APPLE)
+        target_compile_definitions(${PROJECT_NAME} PRIVATE 
+            GL_SILENCE_DEPRECATION
+            GLFW_INCLUDE_GLCOREARB
+        )
+    else()
+        target_compile_definitions(${PROJECT_NAME} PRIVATE GLEW_STATIC)
+    endif()
+endif()
+
+If(WINDOWING_API STREQUAL "GLFW")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE ENGINE_WINDOWING_GLFW)
+endif()
+
 # 3. Include our local headers directory
 target_include_directories(${PROJECT_NAME} PRIVATE include)
-
+target_include_directories(${PROJECT_NAME} PRIVATE src/renderer/rhi)
 # 4. Find GLFW (Required on both Mac and Windows)
 find_package(glfw3 REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
