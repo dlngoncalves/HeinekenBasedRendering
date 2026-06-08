@@ -1,6 +1,10 @@
 #include "OpenGLRenderTarget.h"
 #include "gl_api.h"
 
+OpenGLRenderTarget::OpenGLRenderTarget(const RenderTargetDesc& descRT)
+{
+    desc = descRT;
+}
 
 void OpenGLRenderTarget::init() 
 {

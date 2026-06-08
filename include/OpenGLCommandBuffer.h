@@ -4,11 +4,12 @@
 #include "RHIPipeline.h"
 #include "RHIBuffer.h"
 #include "RHITexture.h"
+// #include "OpenGLRenderTarget.h"
 
 class OpenGLCommandBuffer : public RHICommandBuffer 
 {
     private:
-        //auto* glRenderTarget;
+        //  std::unique_ptr<OpenGLRenderTarget> glRenderTarget;
     public:
         void beginRenderPass(RHIRenderTarget* renderTarget) override;
         void endRenderPass(RHIRenderTarget* renderTarget) override;

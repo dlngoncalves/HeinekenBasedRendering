@@ -1,6 +1,6 @@
+#include "gl_api.h"
 #include "OpenGLCommandBuffer.h"
 #include "OpenGLRenderTarget.h"
-#include "gl_api.h"
 
 void OpenGLCommandBuffer::beginRenderPass(RHIRenderTarget* renderTarget) 
 {
@@ -77,4 +77,19 @@ void OpenGLCommandBuffer::bindTexture(RHITexture* tex, int slot)
     {
         throw std::runtime_error("Invalid texture type for OpenGLCommandBuffer");
     }
+}
+
+void OpenGLCommandBuffer::setViewport(int x, int y, int width, int height)
+{
+    return;
+}
+
+void OpenGLCommandBuffer::drawIndexed(int count, int offset)
+{
+    return;
+}
+
+void OpenGLCommandBuffer::submit()
+{
+    return;
 }

@@ -84,8 +84,7 @@ std::unique_ptr<RHIPipeline> OpenGLDevice::createPipeline(const PipelineDesc& de
 
 std::unique_ptr<RHIRenderTarget> OpenGLDevice::createRenderTarget(const RenderTargetDesc& desc) 
 {
-    // return std::make_unique<OpenGLRenderTarget>(desc);
-    return nullptr; // Placeholder until OpenGLRenderTarget is implemented
+    return std::make_unique<OpenGLRenderTarget>(desc);
 };
 
 std::unique_ptr<RHICommandBuffer> OpenGLDevice::createCommandBuffer()

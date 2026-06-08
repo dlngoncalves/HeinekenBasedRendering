@@ -90,7 +90,7 @@ bool OpenGLPipeline::readFile(const std::string& path, std::string& outContents)
     return false;
 }
 
-GLuint compileShader(const std::string& source, GLenum type)
+GLuint OpenGLPipeline::compileShader(const std::string& source, GLenum type)
 {
     GLuint shader = glCreateShader(type);
     const char* ptmp = source.c_str();
