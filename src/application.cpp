@@ -62,17 +62,18 @@ void Application::init(WindowConfig config)
         return;
     }
 
+    IMGUI_CHECKVERSION();
+    UIContext = ImGui::CreateContext();
+    
+    *io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    
     RenderTargetDesc desc = {RenderTargetType::Screen,1280,720,std::vector<TextureFormat>{},true,TextureFormat::DEPTH24_STENCIL8};
     std::unique_ptr<RHIRenderTarget> renderTarget = glDevice->createRenderTarget(desc);
 
     device = std::move(glDevice);
 
     renderer.init(device.get(), std::move(renderTarget));
-
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    *io = ImGui::GetIO(); (void)io;
-    ImGui::StyleColorsDark();
 
     run();
 }
@@ -85,12 +86,14 @@ void Application::run()
     {
         window.pollEvents();
 
-#ifdef ENGINE_RENDERER_OPENGL
-        ImGui_ImplOpenGL3_NewFrame();
-#endif
+        ImGui::SetCurrentContext(UIContext);
 #ifdef ENGINE_WINDOWING_GLFW
         ImGui_ImplGlfw_NewFrame();
 #endif
+#ifdef ENGINE_RENDERER_OPENGL
+        ImGui_ImplOpenGL3_NewFrame();
+#endif
+
 
         //ideally we want to avoid calling glfw stuff directly
         double lastFrameTime = glfwGetTime();

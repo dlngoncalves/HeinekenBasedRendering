@@ -14,6 +14,7 @@ class Application
         std::unique_ptr<RHIDevice> device;
         double deltaTime;
         ImGuiIO* io;
+        ImGuiContext* UIContext;
         void tick(double deltaTime);
     public:
         Application();

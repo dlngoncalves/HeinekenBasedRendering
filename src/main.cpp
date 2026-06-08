@@ -49,10 +49,6 @@ int main() {
   
     //glfw_window = static_cast<GLFWwindow*>(window.getNativeHandle());
 
-    // Print active version to verify your environment
-    std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
-    std::cout << "GLSL Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-
     Application* app = new Application();
     app->init(config);
 
